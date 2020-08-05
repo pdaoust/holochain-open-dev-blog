@@ -240,7 +240,7 @@ nix-shell --run acorn-build-mac
 Concretely speaking, what happens is that when you run the command that uses electron-packager to create a new release of your app, `nix-shell --run acorn-build-mac`, it will not only create the app archive file that you can distribute, but digitally sign it using the certificate on your device, and then notarize it, which involves uploading the file to Apple's servers, and waiting for it to crunch the code to look for any faults in the source code, or anything suspicious about the entitlements, or otherwise. This usually takes about 10 minutes of waiting for that process to complete. 
 
 In order to see the full logs relating to signing and notarizing logs, while you run this, make sure to set this environment variable before running `acorn-build-mac`, to enable logging for the underlying nodejs libraries that handle those things:
-```
+```nix
 DEBUG=electron-osx-sign*,electron-notarize*
 ```
 
@@ -329,15 +329,15 @@ For `acorn-ui`, which uses special admin level control over the Holochain Conduc
 
 Here are the steps we took to keep the "projects" DNA address a perfect match with the actual bundled file for Holoscape and `acorn-release`:
 1. During the nix command `acorn-build` in `acorn-ui`, [we fetch the DNA file from the relevant `acorn-hc` Github release](https://github.com/h-be/acorn-ui/blob/44755e87e353ac018da6b573b0fbef91f5e9e04a/nix/release/default.nix#L6). The version number is very important. It can be set within the `acorn-build` command, or passed as an override to the command, e.g. `nix-shell --run 'acorn-build 0.3.5'`
-```
+```nix
 curl -O -L https://github.com/h-be/acorn-hc/releases/download/v''${1:-0.3.4}/projects.dna.json
 ```
 2. We [use the same `hc hash` utility to calculate the DNA address for the DNA file to  set an environment variable `PROJECTS_DNA_ADDRESS`](https://github.com/h-be/acorn-ui/blob/44755e87e353ac018da6b573b0fbef91f5e9e04a/nix/release/default.nix#L7)
-```
+```nix
  export PROJECTS_DNA_ADDRESS="'$(hc hash --path projects.dna.json | awk '/DNA Hash: /{print $NF}' | tr -d '\n')'"
 ```
 3. We perform our [npm run build](https://github.com/h-be/acorn-ui/blob/44755e87e353ac018da6b573b0fbef91f5e9e04a/nix/release/default.nix#L8) command, which [uses webpack to create our production UI assets build](https://github.com/h-be/acorn-ui/blob/44755e87e353ac018da6b573b0fbef91f5e9e04a/package.json#L8)
-```
+```nix
  ${pkgs.nodejs}/bin/npm run build
 ```
 4. Our [webpack.prod.js file](https://github.com/h-be/acorn-ui/blob/master/webpack.prod.js) will use [`webpack.DefinePlugin` to find and replace the text `__PROJECTS_DNA_ADDRESS__` in the source code with the value of the given `PROJECTS_DNA_ADDRESS` environment variable](https://github.com/h-be/acorn-ui/blob/44755e87e353ac018da6b573b0fbef91f5e9e04a/webpack.prod.js#L20-L22)
@@ -387,7 +387,7 @@ In `acorn-ui`, the problem mainly arises during development mode, because, for e
 
 Fortunately, the solution in this case came as a webpack option.
 If we set up in `acorn-hc` `starter.conductor-config.toml` template a ["ui bundles" and "ui interfaces" option (which are basically a mock since they won't serve any real files, only the `_dna_connections.json` path)](https://github.com/h-be/acorn-hc/blob/06f7f0dbe54e33f96142275b87f1ac8bb7aab7b3/starter.conductor-config.toml#L35-L46) and run it on port 3111, then we can specify in the [webpack config for development mode, to proxy that particular path from port 8000 to port 3111](https://github.com/h-be/acorn-ui/blob/44755e87e353ac018da6b573b0fbef91f5e9e04a/webpack.dev.js#L9-L11). Here's the lines:
-```
+```json
   ...
   proxy: {
     '/_dna_connections.json': 'http://localhost:3111',
