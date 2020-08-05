@@ -231,7 +231,7 @@ The basic requirements for achieving the build for macOS are that:
 Having done all these things, you will be able to utilize the `acorn-release` pattern for codesigning and notarizing your app. This will allow your end users to trust the app they are receiving greater than they would be able to otherwise. 
 
 You need to run three commands to build a release.
-```
+```bash
 nix-shell --run acorn-bundle-dna
 nix-shell --run acorn-bundle-ui
 nix-shell --run acorn-build-mac
@@ -260,7 +260,7 @@ Draft the new release, and upload the zip file to the release. You will want to 
 ## Releasing for Linux
 
 Building the Linux release is as simple as running 
-```
+```bash
 nix-shell --run acorn-bundle-dna
 nix-shell --run acorn-bundle-ui
 nix-shell --run acorn-build-linux
@@ -280,7 +280,7 @@ Compatible versions of sim2h are released as binaries with each new release vers
 
 To run the sim2h server on a specific port, when you have the binary, run something like this:
 
-```
+```bash
 sim2h_server --port 9051
 ```
 
@@ -289,7 +289,7 @@ Make sure that any firewall you have for the server allows traffic through port 
 sim2h uses standard `RUST_LOG` logs, meaning you can write the logs to stdout by setting `RUST_LOG=debug` as an environment variable before running the `sim2h_server` command. 
 
 In order to have our DNAs reliably connect to the `sim2h` server that we run, we've just adopted the strategy of embedding a specific `sim2h_url` property into the properties objects of the two DNAs we build. We set this as follows in the [app.json files](https://github.com/h-be/acorn-hc/blob/b72a8b9e1899223f4e7a79d9791ed91dae8445c9/dnas/profiles/app.json#L14) at the root of a DNA source code folder:
-```
+```json
   ...
   "properties": {
       "sim2h_url": "ws://sim2h.harris-braun.com:9051/"
@@ -302,7 +302,7 @@ The last two digits of the port number here are a hidden reference to associated
 Setting this property will mean that any Holochain Conductor, if instructed to use sim2h for networking, will look for that URL in the properties of a DNA, and use it preferentially over whatever Conductor-wide setting for sim2h_url was set. The ability to do this was introduced in [this pull request](https://github.com/holochain/holochain-rust/pull/1828). This is good for us because it means that when run within Holoscape, the DNA will use its own preferred URL as a sim2h connection.
 
 The only catch to this is that embedding this property in the DNA can cause issues for your tests (and did for ours), unless you set a special environment variable when you run your tests, to use whatever URL you would prefer for testing purposes. We had to [add a line to our testing command](https://github.com/h-be/acorn-hc/blob/b72a8b9e1899223f4e7a79d9791ed91dae8445c9/nix/test/default.nix#L7) to make sure it worked properly.
-```
+```bash
   HC_IGNORE_SIM2H_URL_PROPERTY=true hc test --skip-package
 ```
 
@@ -345,7 +345,7 @@ curl -O -L https://github.com/h-be/acorn-hc/releases/download/v''${1:-0.3.4}/pro
 
 
 As you may have gathered, the real key to all of this is the `hc hash` capability of the `hc` Holochain developer tools. This takes a DNA file as an input, and returns the exact same hash address that the Holochain Conductor `holochain` will calculate, when it reads that file in, and performs verification on it (throwing a "DNA hash mismatch" error if it fails). The only catch to that command is that it returns a human-readable (vs machine-readable) string, so it needs to be cleaned up of that "DNA Hash" noise from the output, and stripped of its trailing newline character.
-```
+```bash
 hc hash --path dna/profiles.dna.json | awk '/DNA Hash: /{print $NF}' | tr -d '\n'
 ```
 
