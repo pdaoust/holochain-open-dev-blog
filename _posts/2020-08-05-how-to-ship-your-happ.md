@@ -1,4 +1,9 @@
-# How To Ship Your hApp
+---
+layout: post
+title: How To Ship Your hApp
+tags: [ship, holochain, release]
+author: Connoropolous 
+---
 
 It has been a long journey that I've been on with Holochain (since 2017, among the first developers to build apps with the Go prototype of Holochain), and one of the questions I've considered at length is, how can we get people using Holochain in a way where they are their own host, running their own node without even knowing or caring that they're doing it? It was actually later doing internal work for Holo that I first prototyped a solution to this, of providing a native desktop application, that used Holochain under the hood, but installed and ran without EVER touching a command line interface. Since then in my work in the hApps world, external to Holo, I've come a long way with that pattern, and one other pattern for shipping Holochain apps ("hApps") that's similarly simple. I want to share those patterns with you.
 
