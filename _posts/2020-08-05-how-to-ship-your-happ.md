@@ -33,11 +33,11 @@ Both the channels I want to talk about right now involve releasing your hApp as 
 ## Channel 1, Holoscape
 The first channel you can distribute via is called [Holoscape](https://github.com/holochain/holoscape). It's a sort of "hApp manager" for end users (and developers). There is a list of hApps hosted online that are indexed and displayed within Holoscape, for installation by end users. The Holochain runtime (Conductor) is bundled within Holoscape in this scenario, so you don't have to worry about bundling it. You just need to worry about version compatibility between a runtime decoupled from your hApp files. 
 
-![Screen Shot 2020-05-28 at 10.24.17 AM|690x385](https://forum.holochain.org/uploads/default/original/2X/4/4e1477f71fe083616c078d2383c424f81b7125da.jpeg) 
+![a screenshot of Holoscape running in MacOS which has a dominant purple color in the theme, along with three hApps showing in the hApp index, \_\_holo.text , Passthrough DNA, and Acorn](https://forum.holochain.org/uploads/default/original/2X/4/4e1477f71fe083616c078d2383c424f81b7125da.jpeg) 
 
 You can see Acorn listed here, as one of the hApps available for install. It's not difficult to get your hApp listed here. Once a user installs a hApp, they can just use it windowed within Holoscape, like seen below.
 
-![Screen Shot 2020-05-28 at 10.28.25 AM|690x392](https://forum.holochain.org/uploads/default/original/2X/b/b2faa0eca74cae4aada2a8476a8530dc144b32d3.jpeg)
+![a screenshot of Acorn running within Holoscape on MacOS which shows an icon with an acorn in it, and under that says 'welcome to Acorn', along with other subtext](https://forum.holochain.org/uploads/default/original/2X/b/b2faa0eca74cae4aada2a8476a8530dc144b32d3.jpeg)
 
 Releasing to Holoscape is not too difficult. At a glance, all you have to do is:
 1. [pre-compile a version of your hApp DNA file(s) and host it online](https://github.com/h-be/acorn-hc/releases/tag/v0.3.2)
@@ -64,7 +64,7 @@ At a glance, here's how this works:
  
 As you can see, this is not such an "at a glance" thing. This work took a lot of time and dedication to work through, as someone who didn't start out with expertise in the area, and not many people do. In my opinion though, this time and energy was well worth it, and it's my hope that with shared experience the simplicity for others will be much improved.
 
-![Screen Shot 2020-05-28 at 2.41.49 PM|629x499](https://forum.holochain.org/uploads/default/original/2X/e/ef5d4015faa46fc67f8f1410b40ca5054133b6c7.jpeg)
+![a screenshot of a list of applications in Finder on MacOS, with Acorn in the list. Acorn has a purple circular app icon, containing a smaller icon of an actual Acorn](https://forum.holochain.org/uploads/default/original/2X/e/ef5d4015faa46fc67f8f1410b40ca5054133b6c7.jpeg)
 
 That's it for the overview I hope this helps give a general reader a sense of how a Holochain application can be shipped as a native app for macOS or Linux today. Next we move on to the technical deep dive outlining many tips and tricks for how to achieve all this.
 
