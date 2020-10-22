@@ -9,7 +9,7 @@ author: Guillem Córdoba, Tatsuya Sato, and Paul d'Aoust
 
 > **This is a living document, which will be updated as Holochain RSM matures and approaches beta status. We invite and _encourage_ you to contribute your own discoveries and fixes to this document, which lives in the [`holochain-open-dev/blog`](https://github.com/holochain-open-dev/blog) GitHub repo.**
 
-![](https://i.imgur.com/RMZfKCX.png)
+![Cartoon drawing: A phoenix, liveried in Holochain colours and the letters 'RSM' on its breast, rises from the flames and ashes of Holochain Redux.](https://i.imgur.com/RMZfKCX.png)
 
 Holochain has always been about individuals making changes to their local state, which then transform a shared, globally visible state. First, an individual participant commits entries to her local source chain, then those entries are transformed into DHT operations and broadcast to the appropriate validation authourities. An entry can be considered 'a thing that's been said', while a commit represents 'the act of saying something'. This is a peer-to-peer application of the [Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) pattern: source chains are streams of events that affect both their local states and the shared DHT. If all the source chains were replayed up to any point in their histories, they'd recreate the DHT at that point.
 
