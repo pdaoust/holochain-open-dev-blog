@@ -24,7 +24,7 @@ Finally, the HDK is no longer necessary. It's still strongly recommended, becaus
 
 ## Language
 
-| Holochain-Redux | Holochain-RSM | Comment |
+| Holochain Redux | Holochain RSM | Comment |
 | --- | --- | --- |
 | DNA instance | Cell | A DNA paired with an agent key, running in the conductor. |
 | Entry with Header pair | Element | The data structure that represents a commit, which is a header + optional entry data. Each commit to a source chain is represented as an element. |
@@ -35,7 +35,7 @@ Finally, the HDK is no longer necessary. It's still strongly recommended, becaus
 
 ## Data structures
 
-| Holochain-Redux | Holochain-RSM | Comment |
+| Holochain Redux | Holochain RSM | Comment |
 | --- | --- | --- |
 | Headers contain the signature of the entry. | Agents now sign the header; the (header, signature) pair is what gets distributed to the DHT. | This prevents third-party forging of source chains. |
 | There is only one header type; system actions are special entry types. | There is a different header type for each action, and some system-level actions' data (DNA, links creates/deletes, entry deletes) are completely contained in their headers. | This reduces DHT chatter. [Header structs](https://github.com/holochain/holochain/blob/develop/crates/zome_types/src/header.rs#L240-L403) |
@@ -43,7 +43,7 @@ Finally, the HDK is no longer necessary. It's still strongly recommended, becaus
 
 ## Design
 
-| Holochain-Redux | Holochain-RSM | Comment |
+| Holochain Redux | Holochain RSM | Comment |
 | --- | --- | --- |
 | Links must have explicitly defined types, and contain type and tag string. | Links have no type, and can contain any arbitrary data as a vector of bytes. | This makes links more versatile. It also addresses some issues devs were experiencing; now you can easily create links between entry types in different zomes. |
 | Entry type names are not namespaced; identical definitions in two separate zomes can clash with each other. | Entry types are represented by a numeric zome index and numeric entry type index. | These indexes are ordered by appearance -- zomes by their appearance in the `dna.json` manifest file; entry types by their appearance in the return value of your zome's `entry_defs` callback. It's more difficult to work with numbers than names, so expect future HDK tooling to help with this. |
@@ -52,7 +52,7 @@ Finally, the HDK is no longer necessary. It's still strongly recommended, becaus
 
 ### CRUD
 
-| Holochain-Redux | Holochain-RSM | Comment |
+| Holochain Redux | Holochain RSM | Comment |
 | --- | --- | --- |
 | Update and delete operate on an entry hash. | Update and delete operate on a header hash. | This is a big shift in focus from data to state changes, and disambiguates between the same data written at different times by different people. |
 | An entry can be only updated or deleted once, and that status change is canonical; conflicting changes can't be resolved and result in an inconsistent DHT. | An entry can be updated or deleted multiple times for diverging realities, a la Git. | In the future, updates will get a 'redirect' flag and a conflict resolution callback to emulate canonical updates. |
@@ -65,7 +65,7 @@ Finally, the HDK is no longer necessary. It's still strongly recommended, becaus
 
 ## Development
 
-| Holochain-Redux | Holochain-RSM | Comment |
+| Holochain Redux | Holochain RSM | Comment |
 | --- | --- | --- |
 | Zome interaction with the host is complicated and requires the HDK. | The host API, and the callbacks API that the host expects the zome to implement, are simple enough to work with directly if the HDK gets in the way. | It's still preferable to use the HDK in most cases, because it [hides away the boilerplate code](https://github.com/holochain/holochain/blob/develop/crates/hdk/README.md) required to work around the Rust compiler and transfer data through the WASM boundary. |
 | Individual entry types are defined with a callback tagged with the `#[entry_def]` macro and return a `ValidatingEntryType` struct; the `entry!` macro helps construct it. | Entry types are passed to the host as a [wrapped](https://github.com/holochain/holochain/blob/develop/crates/zome_types/src/entry_def.rs#L132-L135) vector of [`EntryDef` structs](https://github.com/holochain/holochain/blob/develop/crates/zome_types/src/entry_def.rs#L68-L79) by your zome's `entry_defs` callback. | There are many ways to create the `EntryDef` structs; the most Rust-y is to [use the `#[hdk_entry]` macro on your structs and enums](https://github.com/holochain/holochain/blob/develop/crates/test_utils/wasm/wasm_workspace/entry_defs/src/lib.rs). |
@@ -89,7 +89,7 @@ Finally, the HDK is no longer necessary. It's still strongly recommended, becaus
 
 ### HDK calls
 
-| Holochain-Redux | Holochain-RSM | Comment |
+| Holochain Redux | Holochain RSM | Comment |
 | --- | --- | --- |
 | All host API functions are complicated to use and are shadowed by Rust functions in the HDK. | All host API functions can be used directly, but are shadowed by macros in the HDK to facilitate transfer of data between host and zome. | These macros create usability problems with IDEs that support Rust code intel via RLS; they may become functions in the future to fix this issue. |
 | `commit_entry` returns the entry hash. | `create_entry` returns the header (commit) hash. | |
@@ -102,6 +102,8 @@ Finally, the HDK is no longer necessary. It's still strongly recommended, becaus
 
 ## UI / front-end / client / RPC
 
+| Holochain Redux | Holochain RSM | Comment |
+| --- | --- | --- |
 | UIs call conductor admin functions and the DNA's zome functions via a local JSON-RPC call over WebSocket. | UIs call functions by sending MsgPack-serialised messages over WebSocket. | [`WireMessage` envelope for function calls](https://github.com/holochain/holochain/blob/develop/crates/websocket/src/util.rs#L40), [admin API request enum](https://github.com/holochain/holochain/blob/develop/crates/holochain/src/conductor/api/api_external/admin_interface.rs#L222-L256), [zome call invocation struct](https://github.com/holochain/holochain/blob/develop/crates/holochain/src/core/ribosome.rs#L291-L304), [holochain-conductor-api for JavaScript-based UIs](https://github.com/holochain/holochain-conductor-api) |
 | Signals are sent to the UI as JSON-serialised objects over WebSocket. | Signals are sent as MsgPack-serialised objects over WebSocket. | [Signal message struct](https://github.com/holochain/holochain/blob/develop/crates/holochain/src/core/signal.rs#L12-L17) |
 | JavaScript clients can use [`holochain/hc-web-client`](https://github.com/holochain/hc-web-client) to make zome or admin calls and listen for signal. | JavaScript clients can use [`holochain/holochain-conductor-api`](https://github.com/holochain/holochain-conductor-api). | This new library has TypeScript typedefs for the zome call function, the admin API function, and all their input/output types. These typedefs document the RPC interface fairly well. |
@@ -109,7 +111,7 @@ Finally, the HDK is no longer necessary. It's still strongly recommended, becaus
 
 ## Developer tooling
 
-| Holochain-Redux | Holochain-RSM | Comment |
+| Holochain Redux | Holochain RSM | Comment |
 | --- | --- | --- |
 | `hc init` scaffolds a new DNA directory with a `dna.json` manifest file and Tryorama test template. | No DNA scaffolding function yet. | |
 | `hc generate` scaffolds a new zome with Cargo tooling and a build script. | No zome scaffolding function yet, but zomes are simple Rust library crates and no longer need a complex build script. | The build script was necessary for optimising the compiled WASM; this is no longer needed. |
