@@ -5,8 +5,6 @@ tags: [holochain, migration, rsm, holochain-rsm]
 author: Guillem Córdoba, Tatsuya Sato, and Paul d'Aoust
 ---
 
-# Holochain RSM Migration Guide
-
 > **This is a living document, which will be updated as Holochain RSM matures and approaches beta status. We invite and _encourage_ you to contribute your own discoveries and fixes to this document, which lives in the [`holochain-open-dev/blog`](https://github.com/holochain-open-dev/blog) GitHub repo.**
 
 ![Cartoon drawing: A phoenix, liveried in Holochain colours and the letters 'RSM' on its breast, rises from the flames and ashes of Holochain Redux.](https://i.imgur.com/RMZfKCX.png)
