@@ -48,7 +48,7 @@ Finally, the HDK is no longer necessary. It's still strongly recommended, becaus
 | You can only validate an agent with their public key and nickname. | There is a new `MembraneProof` entry which contains data that proves that you have permission to join the DHT --- invite codes, vouches from existing members, proof of subscription, etc. | The membrane proof is passed to the conductor when an agent creates a cell, then saved into the second source chain element, the [`AgentValidationPkg`](https://github.com/holochain/holochain/blob/develop/crates/zome_types/src/header.rs#L250-L257). Validation callbacks for membrane proofs are currently unimplemented. |
 | You have no way to retrieve all the headers committed by an agent. | You can ask an agent ID's validation authorities for the agent's entire history, including evidence of a forked chain. | This is one of the pillars of Holochain's integrity model; peer witnessing of agent activity prevents malicious agents from counterfeiting their history. |
 
-### CRUD
+## CRUD
 
 | Holochain Redux | Holochain RSM | Comment |
 | --- | --- | --- |
